@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Map} from "immutable";
-import GamesListComponentView from "./GamesListComponentView";
-
+import PlayersListComponentView from "./PlayersListComponentView";
 
 export default function () {
 
-    const [gamesMap, setGamesMap] = useState(new Map());
+    const [playersMap, setPlayersMap] = useState(new Map());
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [pageNumber, setPageNumber] = useState(0);
-    let games;
+    let players;
 
     const [page, setPage] = React.useState(1);
     const handleChange = (event, value) => {
@@ -21,25 +20,23 @@ export default function () {
 
     useEffect(() => {
 
-        const url = `${process.env.REACT_APP_CAPSER_BACKEND}/stats/games?pageSize=10&pageNumber=${page - 1}`;
+        const url = `${process.env.REACT_APP_CAPSER_BACKEND}/stats/players?pageSize=10&pageNumber=${page - 1}`;
 
         axios.get(url, {withCredentials: true})
             .then((res) => {
-                games = res.data.content;
+                players = res.data.content;
                 setPageNumber(res.data.totalPages);
                 setIsLoading(false);
 
                 let newMap = new Map();
-
                 let index = 0;
 
-                games.forEach(game => {
-                    newMap = newMap.set(index, game);
+                players.forEach(player => {
+                    newMap = newMap.set(index, player);
                     index = index + 1;
                 });
 
-
-                setGamesMap(newMap);
+                setPlayersMap(newMap);
                 setIsLoading(false);
 
             })
@@ -55,12 +52,12 @@ export default function () {
 
     return (
         <div>
-            <GamesListComponentView games={gamesMap}
-                                    isLoading={isLoading}
-                                    error={error}
-                                    page={page}
-                                    handleChange={handleChange}
-                                    pageNumber={pageNumber}
+            <PlayersListComponentView players={playersMap}
+                                      isLoading={isLoading}
+                                      error={error}
+                                      page={page}
+                                      handleChange={handleChange}
+                                      pageNumber={pageNumber}
             />
 
 

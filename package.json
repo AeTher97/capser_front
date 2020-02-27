@@ -16,7 +16,8 @@
     "react-scripts": "3.3.0",
     "react-window": "^1.8.5",
     "uuid": "^3.3.3",
-    "clsx": "latest"
+    "clsx": "latest",
+    "color": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

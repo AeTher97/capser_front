@@ -23,8 +23,16 @@ const useMainStyle = makeStyles(theme => ({
         flexShrink: 0,
     },
 
+    name: {
+        flexGrow: 1,
+    },
+
     drawerPaper: {
         width: drawerWidth,
+    },
+
+    selector: {
+        justifyContent: 'right'
     },
 
     content: {

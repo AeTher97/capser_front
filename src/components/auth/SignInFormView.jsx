@@ -19,13 +19,13 @@ const SignInFormView = (props) => {
 
 
                 <TextField id="email-field"
-                           name="email"
-                           label="Email"
-                           value={props.emailField.value}
-                           onChange={props.emailField.handleChange}
-                           onBlur={props.emailField.handleBlur}
-                           error={!!props.emailField.errors}
-                           helperText={props.emailField.errors}
+                           name="username"
+                           label="Username"
+                           value={props.usernameField.value}
+                           onChange={props.usernameField.handleChange}
+                           onBlur={props.usernameField.handleBlur}
+                           error={!!props.usernameField.errors}
+                           helperText={props.usernameField.errors}
                            className={styles.formElement}
                 />
                 <TextField id="password-field"
@@ -39,8 +39,9 @@ const SignInFormView = (props) => {
                            helperText={props.passwordField.errors}
                            className={styles.formElement}
                 />
-
-                <Button color="primary" variant="contained" className={styles.button} type="submit">
+                <div className={styles.loginError}>{props.loginErrorText}</div>
+                <Button color="primary" variant="contained" className={styles.button}
+                        type="submit">
                     Sign in
                 </Button>
 
@@ -65,6 +66,11 @@ const useStyles = makeStyles(() => ({
     },
     heading: {
         textAlign: 'center'
+    },
+    loginError: {
+        marginTop: 10,
+        color: 'red',
+        fontSize: 13
     }
 }));
 

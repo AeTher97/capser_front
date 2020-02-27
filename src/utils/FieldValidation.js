@@ -26,11 +26,17 @@ function useFieldValidation(initialValue, validate) {
         return validationErrors
     }
 
+    function clearValue() {
+        setValue('');
+    }
+
+
     return {
         value,
         handleChange,
         errors,
         handleBlur,
+        clearValue,
         validate: runValidation
     }
 

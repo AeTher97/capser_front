@@ -1,5 +1,4 @@
-import React, {useState} from "react";
-import {useHistory} from "react-router-dom";
+import React from "react";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -7,47 +6,68 @@ import Typography from "@material-ui/core/Typography";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import CenteredLoadingAnimation from "../misc/CenteredLoadingAnimation";
-import Chip from "@material-ui/core/Chip";
 import clsx from 'clsx';
+import Pagination from "@material-ui/lab/Pagination";
+import ListItem from "@material-ui/core/ListItem";
 
 
 export default function (props) {
 
-    const [gamestMap, setGamesMap] = useState(new Map());
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const history = useHistory();
 
     const classes = useStyles();
 
+
     const displayGame = (game, index) => {
+        const date = new Date(game.gameDate);
+
         return (<ExpansionPanel key={index} expanded={expanded === index} onChange={handleChange(index)}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                >
+                    id="panel1bh-header">
                     <Typography className={classes.headingColumn}>Sudden Death</Typography>
-                    <Typography
-                        className={[classes.players, classes.headingColumn]}>{game.playerId} vs {game.opponentId}</Typography>
-                    <Typography className={[classes.winner, classes.headingColumn]}>Winner {game.winner}</Typography>
+                    <div className={classes.headingColumn}>
+                        <Typography>
+                            <span
+                                style={game.winner === game.playerName ? {color: 'lime'} : {color: 'red'}}>{game.playerName}
+                            </span>
+                            <span> vs </span>
+                            <span
+                                style={game.winner === game.opponentName ? {color: 'lime'} : {color: 'red'}}>{game.opponentName}
+                            </span>
+                        </Typography>
+                    </div>
+                    <Typography className={classes.headingColumn}>{date.toLocaleString("en-US")}</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className={classes.details}>
                     <div className={classes.column}>
-                        <Typography>
+                        <Typography variant='subtitle2' className={classes.subtitleText}>
                             Score {game.playerScore} : {game.opponentScore}
+                        </Typography>
+                        <Typography variant='subtitle2' className={classes.subtitleText}>
+                            Rebuttals {game.playerRebottles} : {game.opponentRebottles}
+                        </Typography>
+                        <Typography variant='subtitle2' className={classes.subtitleText}>
+                            Sinks {game.playerSinks} : {game.opponentSinks}
                         </Typography>
                     </div>
                     <div className={classes.column}>
-                        <Chip label="Barbados" onDelete={() => {
-                        }}/>
-
+                        {game.playerPointsChange !== null ? getPointsChangeHeader() : ''}
+                        {getPointsChange(game.playerName, game.playerPointsChange)}
+                        {getPointsChange(game.opponentName, game.opponentPointsChange)}
                     </div>
                     <div className={clsx(classes.column, classes.helper)}>
-                        <Typography>
-                            cos
+                        <Typography variant='subtitle2' className={classes.subtitleText}>
+                            Player profiles
+                        </Typography>
+                        <Typography variant='subtitle2' className={clsx(classes.subtitleText, classes.link)}>
+                            {game.playerName}
+                        </Typography>
+                        <Typography variant='subtitle2' className={clsx(classes.subtitleText, classes.link)}>
+                            {game.opponentName}
                         </Typography>
                     </div>
+
 
                 </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -59,13 +79,51 @@ export default function (props) {
         setExpanded(isExpanded ? panel : false);
     };
 
+    const getPointsChangeHeader = () => {
+        return (<Typography variant='subtitle2'>
+            Points change
+        </Typography>)
+    };
+
+    const getPointsChange = (player, pointsChange) => {
+
+        if (pointsChange !== null) {
+            if (pointsChange < 0) {
+
+                return (
+                    <div>
+                        <Typography variant='subtitle2' className={classes.loser}>
+                            {player} {Math.floor(pointsChange)}
+                        </Typography>
+                    </div>)
+            } else {
+                return (
+                    <div>
+                        <Typography variant='subtitle2' className={classes.winner}>
+                            {player} +{Math.floor(pointsChange)}
+                        </Typography>
+                    </div>)
+            }
+
+        }
+    };
+
 
     const listGames = !!props.games && props.games.toIndexedSeq()
         .map(displayGame);
 
 
     return (<div>
+            <ListItem>
+                {!props.isLoading ? <Typography variant={"h5"}>Games</Typography> : ''}
+            </ListItem>
             {props.isLoading ? <CenteredLoadingAnimation/> : listGames}
+
+            <Pagination showFirstButton showLastButton className={classes.pagination} count={props.pageNumber}
+                        page={props.page}
+                        onChange={props.handleChange}
+                        color="primary" variant="outlined"
+                        shape="rounded"/>
         </div>
     )
 
@@ -81,11 +139,14 @@ const useStyles = makeStyles(theme => ({
         flexBasis: '33.33%',
         flexShrink: 0,
     },
-    players: {
+    subtitleText: {
         color: theme.palette.text.secondary,
     },
     winner: {
-        color: 'green',
+        color: 'lime',
+    },
+    loser: {
+        color: 'red'
     },
     helper: {
         borderLeft: `2px solid ${theme.palette.divider}`,
@@ -95,6 +156,21 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
     },
     column: {
-        flexBasis: '33.33%',
+        flexBasis: '32%',
+    },
+    link: {
+        color: theme.palette.primary.main,
+        textDecoration: 'none',
+        '&:hover': {
+            cursor: 'pointer',
+            textDecoration: 'underline',
+        },
+    },
+    pagination: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20
+
     }
 }));

@@ -5,37 +5,72 @@ import {BrowserRouter as Router} from "react-router-dom";
 import MainNavigation from "./routes/MainNavigation";
 import useMainStyle from "./styles/MainStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import {SupervisorAccount} from "@material-ui/icons";
+import {Games, LockOpen, SupervisorAccount} from "@material-ui/icons";
 import {AuthenticationContext} from "./utils/AuthenticationContext";
-import {AgentLanguageContext} from "./utils/AgentLanguageContext";
 import axios from 'axios';
+import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
+import green from "@material-ui/core/colors/green";
 
 function App() {
 
     const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
-    const [user, setUser] = useState(null);
-    const [agentLanguage, setAgentLanguage] = useState(null);
-    const [supportedLanguages, setSupportedLanguages] = useState([]);
+    const darkTheme = createMuiTheme({
+        palette: {
+            type: "dark",
+            primary: {main: 'rgb(255,0,0)'},
+            secondary: green,
+        },
+        status: {
+            danger: 'orange',
+        },
+    });
+
+    const lightTheme = createMuiTheme({
+        palette: {
+            primary: {main: 'rgb(201,8,24)'},
+            secondary: green,
+        },
+        status: {
+            danger: 'orange',
+        },
+    });
+    const [theme, setTheme] = useState(darkTheme);
+    const [themeName, setThemeName] = useState('dark');
+
+
+    const changeTheme = (event) => {
+        const innerTheme = event.target.value;
+        setThemeName(innerTheme);
+        if (innerTheme === 'dark') {
+            setTheme(darkTheme)
+        }
+        if (innerTheme === 'light') {
+            setTheme(lightTheme)
+        }
+    };
+
+    const [user, setUser] = useState(() => {
+        let localData = localStorage.getItem('user');
+        if (!localData) {
+            return null;
+        }
+        localData = JSON.parse(localData);
+
+        return localData;
+
+    });
 
     const classes = useMainStyle();
 
-    console.log(process.env.REACT_APP_MANAGER_URL);
-    console.log(process.env.REACT_APP_LOGS_MANAGER_URL);
+
     useEffect(() => {
         if (user) {
-            const url = `${process.env.REACT_APP_MANAGER_URL}/agent/info`;
-            axios.get(url)
-                .then(res => {
-                    const agentInfo = res.data;
-                    const allSupportedLanguages = [...agentInfo.supportedLanguageCodes, agentInfo.defaultLanguageCode];
-                    setSupportedLanguages(allSupportedLanguages);
-                    setAgentLanguage(agentInfo.defaultLanguageCode)
-                })
-                .catch(err => {
-                    console.log(err.message);
-                    alert(err.message)
-                })
+            localStorage.setItem('user', JSON.stringify(user));
+            axios.interceptors.request.use(function (config) {
+                config.headers.Authorization = user.token;
+                return config;
+            });
         }
     }, [user]);
 
@@ -46,26 +81,33 @@ function App() {
 
     const menuItems = [
         {
+            "name": "Login",
+            "icon": <LockOpen/>,
+            "path": "/login"
+        },
+        {
             "name": "Games",
-            "icon": <SupervisorAccount/>,
+            "icon": <Games/>,
             "path": "/games"
         },
         {
             "name": "Players",
             "icon": <SupervisorAccount/>,
             "path": "/players"
-        },
+        }
+
     ];
 
     return (
-        <div className={classes.root}>
-            <AuthenticationContext.Provider value={{user, setUser}}>
-                <AgentLanguageContext.Provider value={{agentLanguage, setAgentLanguage, supportedLanguages}}>
+        <ThemeProvider theme={theme}>
+            <div className={classes.root}>
+                <AuthenticationContext.Provider value={{user, setUser}}>
 
                     <CssBaseline/>
                     <TopBar onDrawerToggle={handleDrawerButton}
                             isDrawerOpen={isMobileDrawerOpen}
-
+                            theme={themeName}
+                            changeTheme={changeTheme}
                     />
 
                     <Router basename={process.env.PUBLIC_URL}>
@@ -74,16 +116,21 @@ function App() {
                                  onMobileDrawerClose={() => {
                                      setIsMobileDrawerOpen(false)
                                  }}
+                                 logout={() => {
+                                     console.log("logging out");
+                                     localStorage.removeItem('user');
+                                     setUser(null);
+                                 }}
                         />
 
                         <MainNavigation items={menuItems}/>
 
 
                     </Router>
-                </AgentLanguageContext.Provider>
-            </AuthenticationContext.Provider>
+                </AuthenticationContext.Provider>
 
-        </div>
+            </div>
+        </ThemeProvider>
     );
 }
 

@@ -7,11 +7,13 @@ import useMainStyle from "../styles/MainStyles";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from '@material-ui/icons/Menu';
 import {useMediaQuery, useTheme} from "@material-ui/core";
+import SelectThemeComponent from "./misc/SelectThemeComponent";
 
 export default function (props) {
     const classes = useMainStyle();
 
     const theme = useTheme();
+
     const isSmallDevice = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
@@ -26,13 +28,20 @@ export default function (props) {
                 >
                     <MenuIcon/>
                 </IconButton>}
-                <Typography variant="h6" noWrap>
+                <Typography variant="h6" noWrap className={classes.name}>
                     Global Caps League
                 </Typography>
+                <div className={classes.selector}>
+                    <SelectThemeComponent
+                        passedTheme={props.theme}
+                        changeTheme={props.changeTheme}
+
+                    />
+                </div>
+
             </Toolbar>
         </AppBar>
     );
 }
-
 
 

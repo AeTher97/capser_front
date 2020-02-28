@@ -19,6 +19,7 @@ export default function (props) {
 
     const displayGame = (game, index) => {
         const date = new Date(game.gameDate);
+        console.log(game)
 
         return (<ExpansionPanel key={index} expanded={expanded === index} onChange={handleChange(index)}>
                 <ExpansionPanelSummary
@@ -45,7 +46,7 @@ export default function (props) {
                             Score {game.playerScore} : {game.opponentScore}
                         </Typography>
                         <Typography variant='subtitle2' className={classes.subtitleText}>
-                            Rebuttals {game.playerRebottles} : {game.opponentRebottles}
+                            Rebuttals {game.playerRebuttals} : {game.opponentRebuttals}
                         </Typography>
                         <Typography variant='subtitle2' className={classes.subtitleText}>
                             Sinks {game.playerSinks} : {game.opponentSinks}

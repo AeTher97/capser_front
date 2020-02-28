@@ -8,17 +8,16 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import WarningIcon from '@material-ui/icons/Warning';
 import Tooltip from "@material-ui/core/Tooltip";
 import {ListItemSecondaryAction} from "@material-ui/core";
 import Zoom from "@material-ui/core/Zoom";
+import Divider from "@material-ui/core/Divider";
 
 export default function (props) {
 
 
     const classes = useStyles();
-
 
     const displayPlayer = (player, index) => {
 
@@ -26,44 +25,45 @@ export default function (props) {
         place = place + 1 + (props.page - 1) * 10;
 
         return (
+            <div key={index}>
+                <ListItem alignItems="flex-start">
 
-            <ListItem key={index} alignItems="flex-start">
-                <ListItemIcon primary={place}>
-                    <Typography variant={"h5"}>{place}</Typography>
-                </ListItemIcon>
-                <ListItemAvatar>
-                    <Tooltip title={<div>
-                        <Typography variant={"subtitle2"}>Games Won {player.gamesWon}</Typography>
-                        <Typography variant={"subtitle2"}>Games Lost {player.gamesLost}</Typography>
-                        <Typography variant={"subtitle2"}>Average
-                            Rebuttals {Math.round(player.averageRebottles).toFixed(2)}</Typography>
-                        <Typography variant={"subtitle2"}>Win/Loss
-                            Ratio {Math.round(player.winLossRatio).toFixed(2)}</Typography>
-                        <Typography variant={"subtitle2"}>Sinks Made To Lost
-                            Ratio {Math.round(player.sinksMadeToLostRatio).toFixed(2)}</Typography>
-                        <Typography variant={"subtitle2"}>Naked
-                            Laps {Math.round(player.sinksMadeToLostRatio).toFixed(2)}</Typography>
-                    </div>
-                    } arrow>
-                        <Avatar alt="Remy Sharp" src="/avatar.jfif"/>
-                    </Tooltip>
-                </ListItemAvatar>
-                <ListItemText
-                    primary={<Typography variant={"h6"} className={classes.link}>{player.name}</Typography>}
-                    secondary={
-                        <React.Fragment>
-                            Points {Math.floor(player.points)}
-                        </React.Fragment>
-                    }
-                />
-                <ListItemSecondaryAction>
-                    {player.nakedLap ? <Tooltip title="Naked lap warning" TransitionComponent={Zoom}>
-                        <WarningIcon style={{color: 'red'}}/>
+                    <ListItemAvatar>
+                        <Tooltip title={<div>
+                            <Typography variant={"subtitle2"}>Games Won {player.gamesWon}</Typography>
+                            <Typography variant={"subtitle2"}>Games Lost {player.gamesLost}</Typography>
+                            <Typography variant={"subtitle2"}>Average
+                                Rebuttals {Math.round(player.averageRebottles).toFixed(2)}</Typography>
+                            <Typography variant={"subtitle2"}>Win/Loss
+                                Ratio {Math.round(player.winLossRatio).toFixed(2)}</Typography>
+                            <Typography variant={"subtitle2"}>Sinks Made To Lost
+                                Ratio {Math.round(player.sinksMadeToLostRatio).toFixed(2)}</Typography>
+                            <Typography variant={"subtitle2"}>Naked
+                                Laps {Math.round(player.sinksMadeToLostRatio).toFixed(2)}</Typography>
+                        </div>
+                        } arrow>
+                            <Avatar alt="Remy Sharp" src="/avatar.jfif"/>
+                        </Tooltip>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={<Typography variant={"h6"} className={classes.link}>{place} {player.name}</Typography>}
+                        secondary={
+                            <React.Fragment>
+                                Points {Math.floor(player.points)}
+                            </React.Fragment>
+                        }
+                    />
+                    <ListItemSecondaryAction>
+                        {player.nakedLap ? <Tooltip title="Naked lap warning" TransitionComponent={Zoom}>
+                            <WarningIcon style={{color: 'red'}}/>
 
-                    </Tooltip> : ''}
-                </ListItemSecondaryAction>
+                        </Tooltip> : ''}
+                    </ListItemSecondaryAction>
 
-            </ListItem>
+                </ListItem>
+                {index + 1 !== props.players.size ? <Divider variant="inset" component="li"/> : ''}
+            </div>
+
         )
     };
 
@@ -98,7 +98,6 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         backgroundColor: theme.palette.background.paper,
         borderWidth: 0.5,
-        boxShadow: "1px 1px  #9E9E9E"
 
     },
     mixColor: {

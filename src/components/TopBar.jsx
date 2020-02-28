@@ -28,6 +28,7 @@ export default function (props) {
                 >
                     <MenuIcon/>
                 </IconButton>}
+                <img src={"pcl_logo_no_text.png"} alt={"Global Caps League logo"} className={classes.logo}/>
                 <Typography variant="h6" noWrap className={classes.name}>
                     Global Caps League
                 </Typography>

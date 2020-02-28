@@ -5,15 +5,17 @@ import {BrowserRouter as Router} from "react-router-dom";
 import MainNavigation from "./routes/MainNavigation";
 import useMainStyle from "./styles/MainStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import {Games, LockOpen, SupervisorAccount} from "@material-ui/icons";
+import {Add, Games, LockOpen, SupervisorAccount} from "@material-ui/icons";
 import {AuthenticationContext} from "./utils/AuthenticationContext";
 import axios from 'axios';
 import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
 import green from "@material-ui/core/colors/green";
 
+
 function App() {
 
     const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
 
     const darkTheme = createMuiTheme({
         palette: {
@@ -28,15 +30,38 @@ function App() {
 
     const lightTheme = createMuiTheme({
         palette: {
-            primary: {main: 'rgb(201,8,24)'},
+            primary: {main: 'rgb(255,0,0)'},
             secondary: green,
         },
         status: {
             danger: 'orange',
         },
     });
-    const [theme, setTheme] = useState(darkTheme);
-    const [themeName, setThemeName] = useState('dark');
+    const [theme, setTheme] = useState(() => {
+        let localData = localStorage.getItem('theme');
+        if (!localData) {
+            return darkTheme;
+        }
+        localData = JSON.parse(localData);
+
+        return localData;
+
+    });
+    const [themeName, setThemeName] = useState(() => {
+        let localData = localStorage.getItem('themeName');
+        if (!localData) {
+            setTheme(darkTheme);
+            return 'dark';
+        }
+
+        if (localData === 'light') {
+            setTheme(lightTheme);
+        } else {
+            setTheme(darkTheme);
+        }
+        return localData;
+
+    });
 
 
     const changeTheme = (event) => {
@@ -63,40 +88,70 @@ function App() {
 
     const classes = useMainStyle();
 
+    axios.interceptors.response.use((res) => {
+        return Promise.resolve(res);
+    }, (error) => {
+        if (error != null && error.response.status === 401) {
+            console.log('xdd')
+            setUser(null);
+            localStorage.removeItem('user');
+        }
+        return Promise.reject(error);
+    });
+
 
     useEffect(() => {
         if (user) {
             localStorage.setItem('user', JSON.stringify(user));
-            axios.interceptors.request.use(function (config) {
-                config.headers.Authorization = user.token;
-                return config;
-            });
+
         }
     }, [user]);
+
+    useEffect(() => {
+        if (theme) {
+            localStorage.setItem('theme', JSON.stringify(theme));
+            localStorage.setItem('themeName', themeName);
+        }
+    }, [theme]);
 
 
     const handleDrawerButton = () => {
         setIsMobileDrawerOpen(!isMobileDrawerOpen);
     };
 
-    const menuItems = [
-        {
+    const menuItems = !user ? [{
             "name": "Login",
             "icon": <LockOpen/>,
             "path": "/login"
-        },
-        {
+        }, {
+            "name": "Add Game",
+            "icon": <Add/>,
+            "path": "/add"
+        }, {
             "name": "Games",
             "icon": <Games/>,
             "path": "/games"
         },
-        {
-            "name": "Players",
-            "icon": <SupervisorAccount/>,
-            "path": "/players"
-        }
+            {
+                "name": "Players",
+                "icon": <SupervisorAccount/>,
+                "path": "/players"
+            }] :
+        [{
+            "name": "Add Game",
+            "icon": <Add/>,
+            "path": "/add"
+        }, {
+            "name": "Games",
+            "icon": <Games/>,
+            "path": "/games"
+        },
+            {
+                "name": "Players",
+                "icon": <SupervisorAccount/>,
+                "path": "/players"
+            }];
 
-    ];
 
     return (
         <ThemeProvider theme={theme}>
@@ -121,6 +176,7 @@ function App() {
                                      localStorage.removeItem('user');
                                      setUser(null);
                                  }}
+
                         />
 
                         <MainNavigation items={menuItems}/>

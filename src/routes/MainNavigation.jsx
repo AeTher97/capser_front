@@ -6,6 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 import SignInScreen from "../screen/SignInScreen";
 import GamesScreen from "../screen/GamesScreen";
 import PlayserScreen from "../screen/PlayserScreen";
+import AddGameScreen from "../screen/AddGameScreen";
 
 
 export default function (props) {
@@ -21,12 +22,16 @@ export default function (props) {
                     <SignInScreen/>
                 </Route>
 
-                <Route path='/games'>
+                <PrivateRoute path='/games'>
                     <GamesScreen/>
-                </Route>
+                </PrivateRoute>
 
                 <PrivateRoute path='/players'>
                     <PlayserScreen/>
+                </PrivateRoute>
+
+                <PrivateRoute path='/add'>
+                    <AddGameScreen/>
                 </PrivateRoute>
 
 

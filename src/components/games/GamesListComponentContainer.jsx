@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Map} from "immutable";
+
 import GamesListComponentView from "./GamesListComponentView";
 
 
@@ -11,6 +12,7 @@ export default function () {
     const [error, setError] = useState(null);
     const [pageNumber, setPageNumber] = useState(0);
     let games;
+
 
     const [page, setPage] = React.useState(1);
     const handleChange = (event, value) => {

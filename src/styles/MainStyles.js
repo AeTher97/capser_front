@@ -7,6 +7,7 @@ const useMainStyle = makeStyles(theme => ({
         display: 'flex',
     },
 
+
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
     },
@@ -24,6 +25,7 @@ const useMainStyle = makeStyles(theme => ({
     },
 
     name: {
+        fontFamily: 'BankGothicRegular',
         flexGrow: 1,
     },
 
@@ -41,6 +43,10 @@ const useMainStyle = makeStyles(theme => ({
     },
 
     toolbar: theme.mixins.toolbar,
+
+    logo: {
+        maxWidth: 50,
+    },
 }));
 
 export default useMainStyle;

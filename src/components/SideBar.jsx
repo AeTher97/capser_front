@@ -52,6 +52,7 @@ export default function (props) {
                         return <ListItemLink {...item}
                                              key={index}
                                              onItemClicked={props.onMobileDrawerClose}
+
                         />
                     })
                 }

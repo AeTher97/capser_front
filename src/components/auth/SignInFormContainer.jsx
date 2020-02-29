@@ -24,6 +24,10 @@ const SignInFormContainer = () => {
         history.replace(from);
     };
 
+    const redirectToRegister = () => {
+        history.push('/register')
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoginError('');
@@ -49,6 +53,7 @@ const SignInFormContainer = () => {
     return <SignInFormView usernameField={usernameField}
                            passwordField={passwordField}
                            loginErrorText={loginError}
+                           redirectToRegister={redirectToRegister}
                            handleSubmit={handleSubmit}/>;
 };
 

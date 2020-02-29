@@ -40,6 +40,11 @@ const SignInFormView = (props) => {
                            className={styles.formElement}
                 />
                 <div className={styles.loginError}>{props.loginErrorText}</div>
+                <div style={{textAlign: 'right', marginTop: 20}}>
+                    <Button size="small" color="primary" onClick={props.redirectToRegister}>
+                        Register
+                    </Button>
+                </div>
                 <Button color="primary" variant="contained" className={styles.button}
                         type="submit">
                     Sign in
@@ -54,6 +59,7 @@ const SignInFormView = (props) => {
 const useStyles = makeStyles(() => ({
     root: {},
     column: {
+        marginTop: 20,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',

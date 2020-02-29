@@ -8,16 +8,20 @@
     "@material-ui/lab": "^4.0.0-alpha.42",
     "axios": "^0.19.0",
     "classnames": "^2.2.6",
+    "clsx": "latest",
+    "color": "latest",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-input-autosize": "^2.2.2",
+    "react-native": "^0.61.5",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-swipeable-views": "^0.13.9",
     "react-window": "^1.8.5",
     "uuid": "^3.3.3",
-    "clsx": "latest",
-    "color": "latest"
+    "prop-types": "latest",
+    "@material-ui/system": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

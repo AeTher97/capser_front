@@ -9,24 +9,27 @@ import CenteredLoadingAnimation from "../misc/CenteredLoadingAnimation";
 import clsx from 'clsx';
 import Pagination from "@material-ui/lab/Pagination";
 import ListItem from "@material-ui/core/ListItem";
-
+import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye';
+import useTheme from "@material-ui/core/styles/useTheme";
+import VersionBuild from "../misc/VersionBuild";
 
 export default function (props) {
 
-
+    const theme = useTheme();
     const classes = useStyles();
 
 
     const displayGame = (game, index) => {
         const date = new Date(game.gameDate);
-        console.log(game)
-
         return (<ExpansionPanel key={index} expanded={expanded === index} onChange={handleChange(index)}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header">
-                    <Typography className={classes.headingColumn}>Sudden Death</Typography>
+                    {game.gameType === 'SUDDEN_DEATH' ?
+                        <Typography className={classes.headingColumn}>Sudden Death</Typography> : ''}
+                    {game.gameType === 'OVERTIME' ?
+                        <Typography className={classes.headingColumn}>Overtime</Typography> : ''}
                     <div className={classes.headingColumn}>
                         <Typography>
                             <span
@@ -61,10 +64,12 @@ export default function (props) {
                         <Typography variant='subtitle2' className={classes.subtitleText}>
                             Player profiles
                         </Typography>
-                        <Typography variant='subtitle2' className={clsx(classes.subtitleText, classes.link)}>
+                        <Typography variant='subtitle2' onClick={() => props.viewPlayer(game.playerId)}
+                                    className={clsx(classes.subtitleText, classes.link)}>
                             {game.playerName}
                         </Typography>
-                        <Typography variant='subtitle2' className={clsx(classes.subtitleText, classes.link)}>
+                        <Typography variant='subtitle2' onClick={() => props.viewPlayer(game.opponentId)}
+                                    className={clsx(classes.subtitleText, classes.link)}>
                             {game.opponentName}
                         </Typography>
                     </div>
@@ -116,15 +121,25 @@ export default function (props) {
 
     return (<div>
             <ListItem>
-                {!props.isLoading ? <Typography variant={"h5"}>Games</Typography> : ''}
+                {!props.isLoading && props.games.size !== 0 ? <Typography variant={"h5"}>Games</Typography> : ''}
             </ListItem>
             {props.isLoading ? <CenteredLoadingAnimation/> : listGames}
+
+
+            {props.games.size === 0 && !props.isLoading ?
+                <div style={{textAlign: 'center'}}><PanoramaFishEyeIcon width={100} height={100}
+                                                                        style={{color: 'red'}}/>
+                    <Typography variant={"h5"} style={{color: 'red'}}>No games</Typography>
+                </div> : ''}
 
             <Pagination showFirstButton showLastButton className={classes.pagination} count={props.pageNumber}
                         page={props.page}
                         onChange={props.handleChange}
                         color="primary" variant="outlined"
                         shape="rounded"/>
+            <VersionBuild/>
+
+
         </div>
     )
 

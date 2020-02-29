@@ -7,6 +7,9 @@ import SignInScreen from "../screen/SignInScreen";
 import GamesScreen from "../screen/GamesScreen";
 import PlayserScreen from "../screen/PlayserScreen";
 import AddGameScreen from "../screen/AddGameScreen";
+import ProfileScreen from "../screen/ProfileScreen";
+import RegisterScreen from "../screen/RegisterScreen";
+import TenCommandments from "../components/misc/TenCommandments";
 
 
 export default function (props) {
@@ -22,16 +25,29 @@ export default function (props) {
                     <SignInScreen/>
                 </Route>
 
-                <PrivateRoute path='/games'>
+                <Route path='/games'>
                     <GamesScreen/>
-                </PrivateRoute>
+                </Route>
 
-                <PrivateRoute path='/players'>
+                <Route path='/players'>
                     <PlayserScreen/>
-                </PrivateRoute>
+                </Route>
+
+                <Route path='/register'>
+                    <RegisterScreen/>
+                </Route>
+
+                <Route path='/ten_commandments'>
+                    <TenCommandments/>
+                </Route>
+
 
                 <PrivateRoute path='/add'>
                     <AddGameScreen/>
+                </PrivateRoute>
+
+                <PrivateRoute path='/profile'>
+                    <ProfileScreen/>
                 </PrivateRoute>
 
 

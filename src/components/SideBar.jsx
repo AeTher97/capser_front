@@ -57,15 +57,15 @@ export default function (props) {
                     })
                 }
             </List>
-            <Divider/>
+            {props.user !== null ? <Divider/> : ''}
 
-            <ListItem button key={'Sign Out'} onClick={() => {
+            {props.user !== null ? <ListItem button key={'Sign Out'} onClick={() => {
                 props.logout();
                 props.onMobileDrawerClose()
             }}>
                 <ListItemIcon><ExitToApp/></ListItemIcon>
                 <ListItemText primary={'Sign Out'}/>
-            </ListItem>
+            </ListItem> : ''}
         </div>
     );
 

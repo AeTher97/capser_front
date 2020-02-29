@@ -15,6 +15,7 @@ function useFieldValidation(initialValue, validate) {
         setValue(event.target.value);
     }
 
+
     function handleBlur() {
         const validationErrors = validate(value);
         setErrors(validationErrors);
@@ -29,7 +30,6 @@ function useFieldValidation(initialValue, validate) {
     function clearValue() {
         setValue('');
     }
-
 
     return {
         value,

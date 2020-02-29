@@ -5,11 +5,12 @@ import {BrowserRouter as Router} from "react-router-dom";
 import MainNavigation from "./routes/MainNavigation";
 import useMainStyle from "./styles/MainStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import {Add, Games, LockOpen, SupervisorAccount} from "@material-ui/icons";
+import {AccountCircle, Add, FavoriteBorder, Games, SupervisorAccount} from "@material-ui/icons";
 import {AuthenticationContext} from "./utils/AuthenticationContext";
 import axios from 'axios';
 import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
 import green from "@material-ui/core/colors/green";
+import FloatingActionButton from "./components/misc/FloatingActionButton";
 
 
 function App() {
@@ -92,7 +93,6 @@ function App() {
         return Promise.resolve(res);
     }, (error) => {
         if (error != null && error.response.status === 401) {
-            console.log('xdd')
             setUser(null);
             localStorage.removeItem('user');
         }
@@ -119,37 +119,52 @@ function App() {
         setIsMobileDrawerOpen(!isMobileDrawerOpen);
     };
 
+
     const menuItems = !user ? [{
-            "name": "Login",
-            "icon": <LockOpen/>,
-            "path": "/login"
-        }, {
-            "name": "Add Game",
-            "icon": <Add/>,
-            "path": "/add"
-        }, {
-            "name": "Games",
-            "icon": <Games/>,
-            "path": "/games"
+            "name": "Sign In",
+            "icon": <AccountCircle/>,
+            "path": "/profile"
         },
+
             {
                 "name": "Players",
                 "icon": <SupervisorAccount/>,
                 "path": "/players"
+            }, {
+                "name": "Games",
+                "icon": <Games/>,
+                "path": "/games"
+            },
+            {
+                "name": "10 Commandments",
+                "icon": <FavoriteBorder/>,
+                "path": "/ten_commandments"
             }] :
         [{
-            "name": "Add Game",
-            "icon": <Add/>,
-            "path": "/add"
-        }, {
-            "name": "Games",
-            "icon": <Games/>,
-            "path": "/games"
+            "name": user.username,
+            "icon": <AccountCircle/>,
+            "path": "/profile?id=" + user.id
         },
+            {
+                "name": "Add Game",
+                "icon": <Add/>,
+                "path": "/add"
+            },
             {
                 "name": "Players",
                 "icon": <SupervisorAccount/>,
                 "path": "/players"
+            },
+            {
+                "name": "Games",
+                "icon": <Games/>,
+                "path": "/games"
+            },
+
+            {
+                "name": "10 Commandments",
+                "icon": <FavoriteBorder/>,
+                "path": "/ten_commandments"
             }];
 
 
@@ -166,11 +181,15 @@ function App() {
                     />
 
                     <Router basename={process.env.PUBLIC_URL}>
+
+                        {user !== null ? <FloatingActionButton/> : ''}
+
                         <SideBar menuItems={menuItems}
                                  isMobileDrawerOpen={isMobileDrawerOpen}
                                  onMobileDrawerClose={() => {
                                      setIsMobileDrawerOpen(false)
                                  }}
+                                 user={user}
                                  logout={() => {
                                      console.log("logging out");
                                      localStorage.removeItem('user');
@@ -179,11 +198,13 @@ function App() {
 
                         />
 
+
                         <MainNavigation items={menuItems}/>
 
 
                     </Router>
                 </AuthenticationContext.Provider>
+
 
             </div>
         </ThemeProvider>

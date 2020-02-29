@@ -10,19 +10,30 @@ import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
 import WarningIcon from '@material-ui/icons/Warning';
 import Tooltip from "@material-ui/core/Tooltip";
-import {ListItemSecondaryAction} from "@material-ui/core";
+import {ListItemSecondaryAction, useTheme} from "@material-ui/core";
 import Zoom from "@material-ui/core/Zoom";
 import Divider from "@material-ui/core/Divider";
+import VersionBuild from "../misc/VersionBuild";
 
 export default function (props) {
 
 
+    const theme = useTheme();
     const classes = useStyles();
 
     const displayPlayer = (player, index) => {
 
         let place = index;
         place = place + 1 + (props.page - 1) * 10;
+
+        const lastGame = new Date(player.lastGame);
+        let daysSinceLastGame = null;
+        if (player.lastGame !== null) {
+            const currentDate = new Date();
+            const lastGameDays = Math.floor(lastGame.getTime() / (3600 * 24 * 1000));
+            const currentDateDays = Math.floor(currentDate.getTime() / (3600 * 24 * 1000));
+            daysSinceLastGame = lastGameDays - currentDateDays;
+        }
 
         return (
             <div key={index}>
@@ -46,13 +57,17 @@ export default function (props) {
                         </Tooltip>
                     </ListItemAvatar>
                     <ListItemText
-                        primary={<Typography variant={"h6"} className={classes.link}>{place} {player.name}</Typography>}
+                        primary={<Typography variant={"h6"} onClick={() => props.viewPlayer(player.id)}
+                                             className={classes.link}>{place} {player.name}</Typography>}
                         secondary={
                             <React.Fragment>
                                 Points {Math.floor(player.points)}
                             </React.Fragment>
                         }
                     />
+                    {getLastGameText(player, daysSinceLastGame)}
+
+
                     <ListItemSecondaryAction>
                         {player.nakedLap ? <Tooltip title="Naked lap warning" TransitionComponent={Zoom}>
                             <WarningIcon style={{color: 'red'}}/>
@@ -71,6 +86,21 @@ export default function (props) {
     const listPlayers = !!props.players && props.players.toIndexedSeq()
         .map(displayPlayer);
 
+    const getLastGameText = (player, daysSinceLastGame) => {
+        if (player.lastGame !== null && daysSinceLastGame !== 0) {
+            return (<Typography variant={"subtitle2"}>Last game {daysSinceLastGame} days ago</Typography>);
+        }
+        if (daysSinceLastGame === 0) {
+            return (<Typography className={classes.text} variant={"subtitle2"}>Last game today</Typography>)
+        }
+
+        if (daysSinceLastGame === 1) {
+            return (<Typography variant={"subtitle2"}>Last one day ago</Typography>)
+        }
+        return ''
+
+    };
+
 
     return (<div>
             <ListItem>
@@ -86,6 +116,10 @@ export default function (props) {
                         onChange={props.handleChange}
                         color="primary" variant="outlined"
                         shape="rounded"/>
+
+
+            <VersionBuild/>
+
         </div>
     )
 
@@ -129,6 +163,10 @@ const useStyles = makeStyles(theme => ({
         marginTop: 20
 
     },
+    text: {
+        marginTop: 17,
+        marginRight: 20
+    }
 
 }));
 
